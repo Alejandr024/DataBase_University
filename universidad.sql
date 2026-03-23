@@ -43,9 +43,8 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`profesores` (
   `email` VARCHAR(55) NOT NULL,
   `direccion` VARCHAR(255) NOT NULL,
   `categoria` VARCHAR(50) NOT NULL,
-  PRIMARY KEY (`idProfesor`),
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
-ENGINE = InnoDB;
+  PRIMARY KEY (`idProfesor`)
+  );
 
 
 -- -----------------------------------------------------
@@ -62,10 +61,10 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`alumnos` (
   `direccion` VARCHAR(255) NOT NULL,
   `beca` TINYINT(1) NOT NULL,
   PRIMARY KEY (`idAlumno`),
-  UNIQUE INDEX `idAlumno_UNIQUE` (`idAlumno` ASC) VISIBLE,
-  UNIQUE INDEX `nif_UNIQUE` (`nif` ASC) VISIBLE,
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
-ENGINE = InnoDB;
+  UNIQUE INDEX `idAlumno_UNIQUE` (`idAlumno` ASC),
+  UNIQUE INDEX `nif_UNIQUE` (`nif` ASC),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC)
+);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
