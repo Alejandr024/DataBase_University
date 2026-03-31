@@ -1,4 +1,87 @@
+-- SCRIPT EN REVISIÓN----
+
+-- Crear Base de Datos "universidad" ----
+CREATE DATABASE universidad;
+-- Usar la Base de Datos "universidad" ----
 USE universidad;
+-- Crear las tablas----
+
+-- cursos ----
+CREATE TABLE cursos (
+  idCurso INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  nombreDescriptivo VARCHAR(55) NOT NULL,
+  nAsignatura INT NOT NULL
+  );
+
+-- profesores ----
+CREATE TABLE profesores (
+  idProfesor VARCHAR(55) NOT NULL PRIMARY KEY,
+  nif VARCHAR(40) NOT NULL UNIQUE,
+  nombre VARCHAR(55) NOT NULL,
+  apellido1 VARCHAR(55) NOT NULL,
+  apellido2 VARCHAR(55) NOT NULL,
+  email VARCHAR(55) NOT NULL UNIQUE,
+  direccion VARCHAR(255) NOT NULL,
+  codigoPostal INT UNSIGNED NOT NULL,
+  municipio VARCHAR(55) NOT NULL,
+  provincia VARCHAR(55) NOT NULL,
+  categoria VARCHAR(50) NOT NULL
+  );
+
+-- alumnos----
+CREATE TABLE alumnos (
+  idAlumno VARCHAR(55) PRIMARY KEY NOT NULL,
+  nif VARCHAR(40) NOT NULL UNIQUE,
+  nombre VARCHAR(55) NOT NULL,
+  apellido1 VARCHAR(55) NOT NULL,
+  apellido2 VARCHAR(55) NOT NULL,
+  email VARCHAR(55) NOT NULL UNIQUE,
+  direccion VARCHAR(255) NOT NULL,
+  codigoPostal INT UNSIGNED NOT NULL,
+  municipio VARCHAR(55) NOT NULL,
+  provincia VARCHAR(55) NOT NULL,
+  categoria VARCHAR(50) NOT NULL
+);
+
+-- asignaturas ---
+CREATE TABLE asignaturas (
+	idCurso INT NOT NULL,
+    idAsignatura VARCHAR(55) PRIMARY KEY NOT NULL,
+    nombre VARCHAR(55) NOT NULL,
+    cuatrimestre INT UNSIGNED NOT NULL,
+    creditos INT UNSIGNED NOT NULL,
+    caracter VARCHAR(55) NOT NULL,
+    coordinador VARCHAR(55) NOT NULL,
+    FOREIGN KEY (idCurso) REFERENCES cursos(idCurso),
+    FOREIGN KEY (coordinador) REFERENCES profesores(idProfesor)
+);
+
+-- matricula ---
+CREATE TABLE matricula (
+	idAlumno VARCHAR(55) NOT NULL,
+    idAsignatura VARCHAR(55) NOT NULL,
+    nota INT UNSIGNED NOT NULL,
+    FOREIGN KEY (idAlumno) REFERENCES alumnos(idAlumno),
+    FOREIGN KEY (idAsignatura) REFERENCES asignaturas(idAsignatura)
+);
+
+-- impartir ---	
+CREATE TABLE impartir (
+	idProfesor VARCHAR(55) NOT NULL,
+    idAsignatura VARCHAR(55) NOT NULL,
+    FOREIGN KEY (idProfesor) REFERENCES profesores(idProfesor),
+    FOREIGN KEY (idAsignatura) REFERENCES asignaturas(idAsignatura)
+);
+
+-- telefono Contacto del profesor ---
+CREATE TABLE tlfContactoProf (
+	idProfesor VARCHAR(55) NOT NULL,
+    telefono INT UNIQUE NOT NULL,
+    FOREIGN KEY (idProfesor) REFERENCES profesores(idProfesor)
+);
+
+-- Insertar los datos para cada tabla---
+
 
 -- 1. Información de cada asignatura con estadísticas de notas
 SELECT a.curso, a.nombre, a.caracter, COUNT(m.idAlumno) AS alumnos, MIN(m.nota) AS nota_min, MAX(m.nota) AS nota_max, AVG(m.nota) AS nota_media
