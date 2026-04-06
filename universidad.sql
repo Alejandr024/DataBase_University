@@ -43,13 +43,12 @@ CREATE TABLE alumnos (
   provincia VARCHAR(55) NOT NULL,
   categoria VARCHAR(50) NOT NULL
 );
-drop table profesores;
 
 -- asignaturas ---
 CREATE TABLE asignaturas (
 	idCurso INT NOT NULL,
     idAsignatura VARCHAR(55) PRIMARY KEY NOT NULL,
-    nombre VARCHAR(55) NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
     cuatrimestre INT UNSIGNED NOT NULL,
     creditos INT UNSIGNED NOT NULL,
     caracter VARCHAR(55) NOT NULL,
@@ -57,7 +56,6 @@ CREATE TABLE asignaturas (
     FOREIGN KEY (idCurso) REFERENCES cursos(idCurso),
     FOREIGN KEY (coordinador) REFERENCES profesores(idProfesor)
 );
-drop table asignaturas;
 
 -- matricula ---
 CREATE TABLE matricula (
@@ -67,8 +65,6 @@ CREATE TABLE matricula (
     FOREIGN KEY (idAlumno) REFERENCES alumnos(idAlumno),
     FOREIGN KEY (idAsignatura) REFERENCES asignaturas(idAsignatura)
 );
-drop table matricula;
-
 
 -- impartir ---	
 CREATE TABLE impartir (
@@ -77,7 +73,6 @@ CREATE TABLE impartir (
     FOREIGN KEY (idProfesor) REFERENCES profesores(idProfesor),
     FOREIGN KEY (idAsignatura) REFERENCES asignaturas(idAsignatura)
 );
-drop table impartir;
 
 -- telefono Contacto del profesor ---
 CREATE TABLE tlfContactoProf (
@@ -85,7 +80,6 @@ CREATE TABLE tlfContactoProf (
     telefono INT UNIQUE NOT NULL,
     FOREIGN KEY (idProfesor) REFERENCES profesores(idProfesor)
 );
-drop table tlfContactoProf;
 
 -- Importar todos los datos de cada tabla ----
 
@@ -112,23 +106,38 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;
--- Para profesores
-UPDATE profesores SET idProfesor = TRIM(idProfesor);
-
--- Para asignaturas
-UPDATE asignaturas SET coordinador = TRIM(coordinador);
--- Asignaturas ----
-
-DESCRIBE asignaturas;
 
 
-LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/carpeta_de_la_profe/asignatura.csv'
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/carpeta_de_la_profe/asignatura.csv' -- autistada historica de sql, el error era que la longitud era corta para el nombre de la asignatura---
 INTO TABLE asignaturas
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;
 
+-- Matricula ----
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/carpeta_de_la_profe/matricula.csv'
+INTO TABLE matricula
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+-- Impartir ----
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/carpeta_de_la_profe/impartir.csv'
+INTO TABLE impartir
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+-- Telefono Contacto del Profesor ----
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/carpeta_de_la_profe/tlfContactoProf.csv'
+INTO TABLE tlfContactoProf
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
 
 -- 1. Información de cada asignatura con estadísticas de notas
 SELECT a.curso, a.nombre, a.caracter, COUNT(m.idAlumno) AS alumnos, MIN(m.nota) AS nota_min, MAX(m.nota) AS nota_max, AVG(m.nota) AS nota_media
