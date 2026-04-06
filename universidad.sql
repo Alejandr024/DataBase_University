@@ -6,6 +6,7 @@ CREATE DATABASE universidad;
 USE universidad;
 -- Crear las tablas----
 
+
 -- cursos ----
 CREATE TABLE cursos (
   idCurso INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -42,6 +43,7 @@ CREATE TABLE alumnos (
   provincia VARCHAR(55) NOT NULL,
   categoria VARCHAR(50) NOT NULL
 );
+drop table profesores;
 
 -- asignaturas ---
 CREATE TABLE asignaturas (
@@ -55,6 +57,7 @@ CREATE TABLE asignaturas (
     FOREIGN KEY (idCurso) REFERENCES cursos(idCurso),
     FOREIGN KEY (coordinador) REFERENCES profesores(idProfesor)
 );
+drop table asignaturas;
 
 -- matricula ---
 CREATE TABLE matricula (
@@ -64,6 +67,8 @@ CREATE TABLE matricula (
     FOREIGN KEY (idAlumno) REFERENCES alumnos(idAlumno),
     FOREIGN KEY (idAsignatura) REFERENCES asignaturas(idAsignatura)
 );
+drop table matricula;
+
 
 -- impartir ---	
 CREATE TABLE impartir (
@@ -72,6 +77,7 @@ CREATE TABLE impartir (
     FOREIGN KEY (idProfesor) REFERENCES profesores(idProfesor),
     FOREIGN KEY (idAsignatura) REFERENCES asignaturas(idAsignatura)
 );
+drop table impartir;
 
 -- telefono Contacto del profesor ---
 CREATE TABLE tlfContactoProf (
@@ -79,8 +85,49 @@ CREATE TABLE tlfContactoProf (
     telefono INT UNIQUE NOT NULL,
     FOREIGN KEY (idProfesor) REFERENCES profesores(idProfesor)
 );
+drop table tlfContactoProf;
 
--- Insertar los datos para cada tabla---
+-- Importar todos los datos de cada tabla ----
+
+-- Alumnos ----
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/carpeta_de_la_profe/alumnos.csv'
+INTO TABLE alumnos
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+-- Cursos ----
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/carpeta_de_la_profe/curso.csv'
+INTO TABLE cursos
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+-- Profesores ----
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/carpeta_de_la_profe/profesor.csv'
+INTO TABLE profesores
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+-- Para profesores
+UPDATE profesores SET idProfesor = TRIM(idProfesor);
+
+-- Para asignaturas
+UPDATE asignaturas SET coordinador = TRIM(coordinador);
+-- Asignaturas ----
+
+DESCRIBE asignaturas;
+
+
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/carpeta_de_la_profe/asignatura.csv'
+INTO TABLE asignaturas
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
 
 
 -- 1. Información de cada asignatura con estadísticas de notas
