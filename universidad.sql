@@ -6,7 +6,6 @@ CREATE DATABASE universidad;
 USE universidad;
 -- Crear las tablas----
 
-
 -- cursos ----
 CREATE TABLE cursos (
   idCurso INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -46,7 +45,7 @@ CREATE TABLE alumnos (
 
 -- asignaturas ---
 CREATE TABLE asignaturas (
-	idCurso INT NOT NULL,
+	 INT NOT NULL,
     idAsignatura VARCHAR(55) PRIMARY KEY NOT NULL,
     nombre VARCHAR(100) NOT NULL,
     cuatrimestre INT UNSIGNED NOT NULL,
@@ -139,13 +138,16 @@ ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;
 
--- 1. Información de cada asignatura con estadísticas de notas
-SELECT a.curso, a.nombre, a.caracter, COUNT(m.idAlumno) AS alumnos, MIN(m.nota) AS nota_min, MAX(m.nota) AS nota_max, AVG(m.nota) AS nota_media
-FROM asignatura a
+-- Consultas ----
+
+
+-- 1. Información de cada asignatura con estadísticas de notas (Correcto)
+SELECT a.idCurso AS curso, a.nombre, a.caracter, COUNT(m.idAlumno) AS alumnos, MIN(m.nota) AS nota_min, MAX(m.nota) AS nota_max, AVG(m.nota) AS nota_media
+FROM asignaturas a
 LEFT JOIN matricula m
 ON a.idAsignatura = m.idAsignatura
 GROUP BY a.idAsignatura
-ORDER BY a.curso, a.nombre;
+ORDER BY a.idCurso, a.nombre;
 
 -- 2. Asignaturas con nota media menor que 5
 SELECT *
