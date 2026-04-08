@@ -45,7 +45,7 @@ CREATE TABLE alumnos (
 
 -- asignaturas ---
 CREATE TABLE asignaturas (
-	 INT NOT NULL,
+	 idCurso INT NOT NULL,
     idAsignatura VARCHAR(55) PRIMARY KEY NOT NULL,
     nombre VARCHAR(100) NOT NULL,
     cuatrimestre INT UNSIGNED NOT NULL,
@@ -106,12 +106,14 @@ ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;
 
+-- Asignaturas ----
 
-LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/carpeta_de_la_profe/asignatura.csv' -- autistada historica de sql, el error era que la longitud era corta para el nombre de la asignatura---
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/carpeta_de_la_profe/asignatura.csv'
 INTO TABLE asignaturas
+CHARACTER SET utf8mb4
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
+LINES TERMINATED BY '\r\n' -- Problema resuelto: Csv tenia saltos de linea de Windows (\r\n), es probable que fuera uno de los princpales problemas al insertar los FK y el error 1452, y además, al hacer las consultas, el coordinador PR005 era el único que salía, casualmente, no tenía ese salto de linea raro.--
 IGNORE 1 ROWS;
 
 -- Matricula ----
@@ -122,12 +124,13 @@ ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;
 
--- Impartir ----
+-- Impartir (Cuidado, no tiene PK, se puede importar tantas veces como se quiera)----
+ALTER TABLE impartir ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY; -- Solucion: Agregar un id unico a cada fila, para no repetir.---
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/carpeta_de_la_profe/impartir.csv'
 INTO TABLE impartir
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
+LINES TERMINATED BY '\r\n'
 IGNORE 1 ROWS;
 
 -- Telefono Contacto del Profesor ----
@@ -149,11 +152,11 @@ ON a.idAsignatura = m.idAsignatura
 GROUP BY a.idAsignatura
 ORDER BY a.idCurso, a.nombre;
 
--- 2. Asignaturas con nota media menor que 5
+-- 2. Asignaturas con nota media menor que 5 (Correcto)
 SELECT *
 FROM (
-SELECT a.curso, a.nombre, AVG(m.nota) AS media
-FROM asignatura a
+SELECT a.idCurso AS curso, a.nombre, AVG(m.nota) AS media
+FROM asignaturas a
 JOIN matricula m
 ON a.idAsignatura = m.idAsignatura
 GROUP BY a.idAsignatura
@@ -161,28 +164,28 @@ GROUP BY a.idAsignatura
 WHERE media < 5
 ORDER BY curso, nombre;
 
--- 3. Número de profesores por categoría
+-- 3. Número de profesores por categoría (Correcto)
 SELECT categoria, COUNT(*) AS total
-FROM profesor
+FROM profesores
 GROUP BY categoria
 ORDER BY total DESC;
 
--- 4. Asignatura con su profesor coordinador
-SELECT c.nombreDescriptivo, a.nombre, a.caracter, p.nombre, p.apellido1, p.apellido2, p.email
-FROM asignatura a
-JOIN curso c
-ON a.curso = c.idCurso
-JOIN profesor p
+-- 4. Asignatura con su profesor coordinador (Correcto)
+SELECT c.nombreDescriptivo AS curso, a.nombre AS asignatura, a.caracter, p.nombre, p.apellido1, p.apellido2, p.email
+FROM asignaturas a
+JOIN cursos c
+ON a.idCurso = c.idCurso
+JOIN profesores p
 ON a.coordinador = p.idProfesor
 ORDER BY c.nombreDescriptivo, a.nombre;
 
--- 5. Número de asignaturas que imparte cada profesor
+-- 5. Número de asignaturas que imparte cada profesor (Correcto)
 SELECT p.idProfesor, p.nombre, COUNT(i.idAsignatura) AS asignaturas
-FROM profesor p
+FROM profesores p
 JOIN impartir i
 ON p.idProfesor = i.idProfesor
 GROUP BY p.idProfesor
-ORDER BY asignaturas desc;
+ORDER BY asignaturas DESC;
 
 -- 6. Alumnos con media mayor que 7
 SELECT *
