@@ -148,7 +148,9 @@ IGNORE 1 ROWS;
 -- Consultas ----
 
 -- 1. Información de cada asignatura con estadísticas de notas (Correcto)
-SELECT a.idCurso AS curso, a.nombre, a.caracter, COUNT(m.idAlumno) AS alumnos, MIN(m.nota) AS nota_min, MAX(m.nota) AS nota_max, AVG(m.nota) AS nota_media
+SELECT a.idCurso AS curso, a.nombre, a.caracter, 
+COUNT(m.idAlumno) AS alumnos, MIN(m.nota) AS nota_min, 
+MAX(m.nota) AS nota_max, AVG(m.nota) AS nota_media
 FROM asignaturas a
 LEFT JOIN matricula m
 ON a.idAsignatura = m.idAsignatura
@@ -174,7 +176,9 @@ GROUP BY categoria
 ORDER BY total DESC;
 
 -- 4. Asignatura con su profesor coordinador (Correcto)
-SELECT c.nombreDescriptivo AS curso, a.nombre AS asignatura, a.caracter, p.nombre, p.apellido1, p.apellido2, p.email
+SELECT c.nombreDescriptivo AS curso, 
+a.nombre AS asignatura, a.caracter, 
+p.nombre, p.apellido1, p.apellido2, p.email
 FROM asignaturas a
 JOIN cursos c
 ON a.idCurso = c.idCurso
@@ -183,7 +187,8 @@ ON a.coordinador = p.idProfesor
 ORDER BY c.nombreDescriptivo, a.nombre;
 
 -- 5. Número de asignaturas que imparte cada profesor (Correcto)
-SELECT p.idProfesor, p.nombre, COUNT(i.idAsignatura) AS asignaturas
+SELECT p.idProfesor, p.nombre, 
+COUNT(i.idAsignatura) AS asignaturas
 FROM profesores p
 JOIN impartir i
 ON p.idProfesor = i.idProfesor
@@ -193,7 +198,8 @@ ORDER BY asignaturas DESC;
 -- 6. Alumnos con media mayor que 7 (Correcto)
 SELECT *
 FROM (
-SELECT a.nombre, a.apellido1, a.apellido2, AVG(m.nota) AS media
+SELECT a.nombre, a.apellido1, 
+a.apellido2, AVG(m.nota) AS media
 FROM alumnos a
 JOIN matricula m
 ON a.idAlumno = m.idAlumno
@@ -203,7 +209,8 @@ WHERE media > 7
 ORDER BY media DESC;
 
 -- 7. Créditos totales por curso y carácter (Correcto)
-SELECT idCurso, caracter, SUM(creditos) AS total_creditos
+SELECT idCurso, caracter, 
+SUM(creditos) AS total_creditos
 FROM asignaturas
 GROUP BY idCurso, caracter;
 
@@ -235,7 +242,8 @@ WHERE a.nombre = 'Álgebra lineal'
 AND m.nota < 5;
 
 -- 11. Alumnos de segundo curso con nota 10 (Correcto)
-SELECT a.nombre, a.apellido1, a.apellido2, asig.nombre, m.nota
+SELECT a.nombre	, a.apellido1, a.apellido2, 
+asig.nombre, m.nota
 FROM alumnos a
 JOIN matricula m
 ON a.idAlumno = m.idAlumno
@@ -246,11 +254,14 @@ AND m.nota = 10
 ORDER BY asig.nombre;
 
 -- 12. Número total de alumnos y alumnos con beca (Correcto)
-SELECT COUNT(*) AS total_alumnos, SUM(beca = 'si') AS alumnos_beca, ROUND(SUM(beca = 'si') * 100.0 / COUNT(*), 2) AS porcentaje_becados
+SELECT COUNT(*) AS total_alumnos, SUM(beca = 'si') 
+AS alumnos_beca, ROUND(SUM(beca = 'si') * 100.0 / COUNT(*), 2) 
+AS porcentaje_becados
 FROM alumnos;
 
 -- 13. Nota media de alumnos becados (Correcto)
-SELECT a.nombre, a.apellido1, a.apellido2, asig.idCurso, AVG(m.nota) AS media
+SELECT a.nombre, a.apellido1, a.apellido2, asig.idCurso, 
+AVG(m.nota) AS media
 FROM alumnos a
 JOIN matricula m
 ON a.idAlumno = m.idAlumno
@@ -261,7 +272,8 @@ GROUP BY a.idAlumno, asig.idCurso
 ORDER BY a.nombre, a.apellido1, a.apellido2, asig.idCurso;
 
 -- 14. Profesores con mejor media (Correcto)
-SELECT p.nombre, p.apellido1, p.apellido2, AVG(m.nota) AS media
+SELECT p.nombre, p.apellido1, p.apellido2, 
+AVG(m.nota) AS media
 FROM profesores p
 JOIN impartir i
 ON p.idProfesor = i.idProfesor
