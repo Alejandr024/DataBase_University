@@ -292,7 +292,7 @@ ORDER BY idCurso, nombre;
 
 -- 16. Lista de personas (Correcto)
 SELECT nombre, apellido1, apellido2, email
-FROM alumnos;
-
+FROM alumnos
+UNION
 SELECT nombre, apellido1, apellido2, email
 FROM profesores;
